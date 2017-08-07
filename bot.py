@@ -4,6 +4,7 @@
 from wxbot import *
 import ConfigParser
 import json
+import logging
 
 
 class TulingWXBot(WXBot):
@@ -20,6 +21,9 @@ class TulingWXBot(WXBot):
         except Exception:
             pass
         print 'tuling_key:', self.tuling_key
+
+        # 通过下面的方式进行简单配置输出方式与日志级别
+        logging.basicConfig(filename='wxBot.log', level=logging.INFO)
 
     def tuling_auto_reply(self, uid, msg):
         if self.tuling_key:
@@ -63,6 +67,7 @@ class TulingWXBot(WXBot):
                     self.send_msg_by_uid(u'[Robot]' + u'机器人已开启！', msg['to_user_id'])
 
     def handle_msg_all(self, msg):
+        logging.debug(msg)
         if not self.robot_switch and msg['msg_type_id'] != 1:
             return
         if msg['msg_type_id'] == 1 and msg['content']['type'] == 0:  # reply to self
@@ -82,10 +87,13 @@ class TulingWXBot(WXBot):
                 is_at_me = False
                 for detail in msg['content']['detail']:
                     if detail['type'] == 'at':
+                        logging.debug('@某人')
                         for k in my_names:
                             if my_names[k] and my_names[k] == detail['value']:
                                 is_at_me = True
                                 break
+
+                logging.debug('is@me:', is_at_me)
                 if is_at_me:
                     src_name = msg['content']['user']['name']
                     reply = 'To ' + src_name + ': '
