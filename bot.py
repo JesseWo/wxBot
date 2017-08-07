@@ -88,7 +88,7 @@ class TulingWXBot(WXBot):
                                 break
                 if is_at_me:
                     src_name = msg['content']['user']['name']
-                    reply = 'to ' + src_name + ': '
+                    reply = 'To ' + src_name + ': '
                     if msg['content']['type'] == 0:  # text message
                         reply += self.tuling_auto_reply(msg['content']['user']['id'], msg['content']['desc'])
                     else:
@@ -99,7 +99,7 @@ class TulingWXBot(WXBot):
 def main():
     bot = TulingWXBot()
     bot.DEBUG = True
-    bot.conf['qr'] = 'png'
+    bot.conf['qr'] = 'tty'
 
     bot.run()
 
