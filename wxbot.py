@@ -482,6 +482,8 @@ class WXBot:
         if not msg:
             return '', []
         segs = msg.split(u'\u2005')
+        if len(segs) == 1: # 添加
+        segs = msg.split(' ')  #添加
         str_msg_all = ''
         str_msg = ''
         infos = []
