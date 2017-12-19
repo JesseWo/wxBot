@@ -773,7 +773,7 @@ class WXBot:
         self.status = 'loginsuccess'  #WxbotManage使用
         while True:
             if self.status == 'wait4loginout':  #WxbotManage使用
-                return 
+                return
             check_time = time.time()
             try:
                 [retcode, selector] = self.sync_check()
@@ -1277,9 +1277,11 @@ class WXBot:
             ws['Y%d' % count] = contact['Uin']
             ws['Z%d' % count] = contact['StarFriend']
             ws['AA%d' % count] = contact['Statues']
-            # Save the file
-            wb.save('outputs_%s.xlsx' % self.my_account['PYQuanPin'])
-        print 'outputs.xlsx 导出成功!'
+        # Save the file
+        if not os.path.exists('outputs'):
+            os.mkdir('outputs')
+        wb.save('outputs/%s.xlsx' % self.my_account['NickName'])
+        print 'xlsx 导出成功!'
 
     def get_uuid(self):
         url = 'https://login.weixin.qq.com/jslogin'

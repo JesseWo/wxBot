@@ -21,7 +21,8 @@ class MyWXBot(WXBot):
 def main():
     bot = MyWXBot()
     bot.DEBUG = True
-    bot.conf['qr'] = 'tty'
+    # bot.conf['qr'] = 'tty'
+    bot.conf['qr'] = 'png'
     bot.run()
 
 
