@@ -17,6 +17,7 @@ import random
 from traceback import format_exc
 from requests.exceptions import ConnectionError, ReadTimeout
 import HTMLParser
+from openpyxl import Workbook
 
 UNKONWN = 'unkonwn'
 SUCCESS = '200'
@@ -483,7 +484,7 @@ class WXBot:
             return '', []
         segs = msg.split(u'\u2005')
         if len(segs) == 1: # 添加
-        segs = msg.split(' ')  #添加
+         segs = msg.split(' ')  #添加
         str_msg_all = ''
         str_msg = ''
         infos = []
@@ -1205,6 +1206,7 @@ class WXBot:
             self.status_notify()
             if self.get_contact():
                 print '[INFO] Get %d contacts' % len(self.contact_list)
+                self.generateXlsx()
                 print '[INFO] Start to process messages .'
             self.proc_msg()
             self.status = 'loginout'
@@ -1212,6 +1214,72 @@ class WXBot:
             print '[ERROR] Web WeChat run failed --> %s'%(e)
             self.status = 'loginout'
 
+    def generateXlsx(self):
+        # output all contacts to excel
+        wb = Workbook()
+        # grab the active worksheet
+        ws = wb.active
+        # Data can be assigned directly to cells
+        ws['A1'] = 'index'
+        ws['B1'] = 'UserName'
+        ws['C1'] = 'City'
+        ws['D1'] = 'DisplayName'
+        ws['E1'] = 'UniFriend'
+        ws['F1'] = 'PYQuanPin'
+        ws['G1'] = 'RemarkPYInitial'
+        ws['H1'] = 'Sex'
+        ws['I1'] = 'AppAccountFlag'
+        ws['J1'] = 'VerifyFlag'
+        ws['K1'] = 'Province'
+        ws['L1'] = 'KeyWord'
+        ws['M1'] = 'RemarkName'
+        ws['N1'] = 'PYInitial'
+        ws['O1'] = 'AttrStatus'
+        ws['P1'] = 'SnsFlag'
+        ws['Q1'] = 'MemberCount'
+        ws['R1'] = 'OwnerUin'
+        ws['S1'] = 'Alias'
+        ws['T1'] = 'Signature'
+        ws['U1'] = 'ContactFlag'
+        ws['V1'] = 'NickName'
+        ws['W1'] = 'RemarkPYQuanPin'
+        ws['X1'] = 'HeadImgUrl'
+        ws['Y1'] = 'Uin'
+        ws['Z1'] = 'StarFriend'
+        ws['AA1'] = 'Statues'
+        count = 1
+        for contact in self.contact_list:
+            count = count + 1
+            ws['A%d' % count] = count - 1
+            ws['B%d' % count] = contact['UserName']
+            ws['C%d' % count] = contact['City']
+            ws['D%d' % count] = contact['DisplayName']
+            ws['E%d' % count] = contact['UniFriend']
+            ws['F%d' % count] = contact['PYQuanPin']
+            ws['G%d' % count] = contact['RemarkPYInitial']
+            ws['H%d' % count] = contact['Sex']
+            ws['I%d' % count] = contact['AppAccountFlag']
+            ws['J%d' % count] = contact['VerifyFlag']
+            ws['K%d' % count] = contact['Province']
+            ws['L%d' % count] = contact['KeyWord']
+            ws['M%d' % count] = contact['RemarkName']
+            ws['N%d' % count] = contact['PYInitial']
+            ws['O%d' % count] = contact['AttrStatus']
+            ws['P%d' % count] = contact['SnsFlag']
+            ws['Q%d' % count] = contact['MemberCount']
+            ws['R%d' % count] = contact['OwnerUin']
+            ws['S%d' % count] = contact['Alias']
+            ws['T%d' % count] = contact['Signature']
+            ws['U%d' % count] = contact['ContactFlag']
+            ws['V%d' % count] = contact['NickName']
+            ws['W%d' % count] = contact['RemarkPYQuanPin']
+            ws['X%d' % count] = contact['HeadImgUrl']
+            ws['Y%d' % count] = contact['Uin']
+            ws['Z%d' % count] = contact['StarFriend']
+            ws['AA%d' % count] = contact['Statues']
+            # Save the file
+            wb.save('outputs_%s.xlsx' % self.my_account['PYQuanPin'])
+        print 'outputs.xlsx 导出成功!'
 
     def get_uuid(self):
         url = 'https://login.weixin.qq.com/jslogin'
