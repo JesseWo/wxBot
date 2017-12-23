@@ -1216,9 +1216,9 @@ class WXBot:
         if self.get_contact():
             print '[INFO] Get %d contacts' % len(self.contact_list)
             print '[INFO] Start to process messages .'
+        self.on_login_success()
         self.proc_msg()
         self.status = 'loginout'
-        self.on_login_success()
 
     def on_login_success(self):
         pass

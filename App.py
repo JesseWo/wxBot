@@ -23,7 +23,10 @@ class Application(WXBot):
         hbox = QVBoxLayout(widget)
         # 提示文字
         warning_label = QLabel(widget)
-        warning_label.setText('声明:本软件仅用于个人测试使用,严禁商业用途!\n请控制同一账号的使用频率,过多使用可能会导致网页端封号')
+        warning_label.setText('''声明:
+        本软件仅用于个人测试使用, 严禁商业用途!
+        请控制同一账号的使用频率, 过多使用可能会导致网页端限制登录
+        Created by Jessewo''')
         hbox.addWidget(warning_label)
         # qr code
         self.image_label = QLabel(widget)
@@ -36,9 +39,10 @@ class Application(WXBot):
         hbox.addWidget(self.tips_label)
 
         # 按钮
-        btn_output = QPushButton('导出通讯录', widget)
-        btn_output.clicked.connect(self.generate_xlsx)
-        hbox.addWidget(btn_output)
+        self.btn_output = QPushButton('导出通讯录', widget)
+        self.btn_output.clicked.connect(self.generate_xlsx)
+        self.btn_output.setVisible(False)
+        hbox.addWidget(self.btn_output)
         widget.setLayout(hbox)
         # 窗口居中显示
         qr = widget.frameGeometry()
@@ -54,6 +58,7 @@ class Application(WXBot):
     def on_login_success(self):
         self.tips_label.setText('登录成功!')
         self.image_label.setVisible(False)
+        self.btn_output.setVisible(True)
 
     def generate_xlsx(self):
         # output all contacts to excel
