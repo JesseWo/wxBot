@@ -1,0 +1,4 @@
+requests
+pyqrcode
+pypng
+Pillow
