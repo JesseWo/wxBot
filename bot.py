@@ -36,8 +36,8 @@ class TulingWXBot(WXBot):
                 result = respond['url']
             elif respond['code'] == 302000:
                 for k in respond['list']:
-                    result = result + u"【" + k['source'] + u"】 " +\
-                        k['article'] + "\t" + k['detailurl'] + "\n"
+                    result = result + u"【" + k['source'] + u"】 " + \
+                             k['article'] + "\t" + k['detailurl'] + "\n"
             else:
                 result = respond['text'].replace('<br>', '  ')
                 result = result.replace(u'\xa0', u' ')
@@ -65,37 +65,43 @@ class TulingWXBot(WXBot):
     def handle_msg_all(self, msg):
         if not self.robot_switch and msg['msg_type_id'] != 1:
             return
-        if msg['msg_type_id'] == 1 and msg['content']['type'] == 0:  # reply to self
-            self.auto_switch(msg)
-        elif msg['msg_type_id'] == 4 and msg['content']['type'] == 0:  # text message from contact
-            self.send_msg_by_uid(self.tuling_auto_reply(msg['user']['id'], msg['content']['data']), msg['user']['id'])
-        elif msg['msg_type_id'] == 3 and msg['content']['type'] == 0:  # group text message
-            if 'detail' in msg['content']:
-                my_names = self.get_group_member_name(msg['user']['id'], self.my_account['UserName'])
-                if my_names is None:
-                    my_names = {}
-                if 'NickName' in self.my_account and self.my_account['NickName']:
-                    my_names['nickname2'] = self.my_account['NickName']
-                if 'RemarkName' in self.my_account and self.my_account['RemarkName']:
-                    my_names['remark_name2'] = self.my_account['RemarkName']
+        # Text
+        if msg['content']['type'] == 0:
+            if msg['msg_type_id'] == 1:  # reply to self
+                self.auto_switch(msg)
+            elif msg['msg_type_id'] == 4:  # text message from contact
+                self.send_msg_by_uid(self.tuling_auto_reply(msg['user']['id'], msg['content']['data']),
+                                     msg['user']['id'])
+            elif msg['msg_type_id'] == 3:  # group text message
+                if 'detail' in msg['content']:
+                    my_names = self.get_group_member_name(msg['user']['id'], self.my_account['UserName'])
+                    if my_names is None:
+                        my_names = {}
+                    if 'NickName' in self.my_account and self.my_account['NickName']:
+                        my_names['nickname2'] = self.my_account['NickName']
+                    if 'RemarkName' in self.my_account and self.my_account['RemarkName']:
+                        my_names['remark_name2'] = self.my_account['RemarkName']
 
-                is_at_me = False
-                for detail in msg['content']['detail']:
-                    if detail['type'] == 'at':
-                        for k in my_names:
-                            if my_names[k] and my_names[k] == detail['value']:
-                                is_at_me = True
-                                break
+                    is_at_me = False
+                    for detail in msg['content']['detail']:
+                        if detail['type'] == 'at':
+                            for k in my_names:
+                                if my_names[k] and my_names[k] == detail['value']:
+                                    is_at_me = True
+                                    break
 
-                print 'is@me', is_at_me
-                if is_at_me:
-                    src_name = msg['content']['user']['name']
-                    reply = '@' + src_name + ' '
-                    if msg['content']['type'] == 0:  # text message
-                        reply += self.tuling_auto_reply(msg['content']['user']['id'], msg['content']['desc'])
-                    else:
-                        reply += u"对不起，只认字，其他杂七杂八的我都不认识，,,Ծ‸Ծ,,"
-                    self.send_msg_by_uid(reply, msg['user']['id'])
+                    print 'is@me', is_at_me
+                    if is_at_me:
+                        src_name = msg['content']['user']['name']
+                        reply = '@' + src_name + ' '
+                        if msg['content']['type'] == 0:  # text message
+                            reply += self.tuling_auto_reply(msg['content']['user']['id'], msg['content']['desc'])
+                        else:
+                            reply += u"对不起，只认字，其他杂七杂八的我都不认识，,,Ծ‸Ծ,,"
+                        self.send_msg_by_uid(reply, msg['user']['id'])
+        # image
+        elif msg['content']['type'] == 3:
+            print 'msgData: ', msg['content']['data']
 
 
 def main():
@@ -108,4 +114,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
